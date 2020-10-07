@@ -23,6 +23,7 @@ import com.sumsub.sns.core.data.model.SNSCompletionResult;
 import com.sumsub.sns.core.data.model.SNSException;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.liveness3d.SNSLiveness3d;
+import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -176,7 +177,7 @@ public class MainFragment extends BaseFragment {
 
     private void launchSdk(String accessToken) {
         String apiUrl = BuildConfig.API_URL;
-        List<SNSModule> modules = Collections.singletonList(new SNSLiveness3d());
+        List<SNSModule> modules = Arrays.asList(new SNSLiveness3d(), new SNSProoface());
         String flowName = etFlowName.getText().toString();
 
         Function1<SNSException, Unit> onError = e -> {
