@@ -2,15 +2,8 @@ package com.sumsub.idensic.manager;
 
 import com.sumsub.idensic.BuildConfig;
 import com.sumsub.idensic.model.AccessTokenResponse;
-import com.sumsub.idensic.model.ApplicantRequest;
-import com.sumsub.idensic.model.ApplicantResponse;
-import com.sumsub.idensic.model.DocSet;
-import com.sumsub.idensic.model.DocSets;
-import com.sumsub.idensic.model.InfoAttribute;
 import com.sumsub.idensic.model.PayloadResponse;
 import com.sumsub.idensic.network.ApiService;
-
-import java.util.List;
 
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -44,12 +37,12 @@ public class ApiManager {
         return service.login(Credentials.basic(username, password), Integer.MAX_VALUE);
     }
 
-    public Call<AccessTokenResponse> getAccessToken(String token, String applicantId, String userId) {
-        return service.getAccessToken("Bearer " + token, applicantId, userId, Integer.MAX_VALUE);
+    public Call<AccessTokenResponse> getAccessTokenForFlow(String token, String userId) {
+        return service.getAccessToken("Bearer " + token, userId, null, Integer.MAX_VALUE);
     }
 
-    public Call<ApplicantResponse> getApplicantId(String token, List<DocSet> docs, String userId) {
-        ApplicantRequest request = new ApplicantRequest(new DocSets(docs), userId, null, null, null, null, new InfoAttribute());
-        return service.getApplicantId("Bearer " + token, request);
+    public Call<AccessTokenResponse> getAccessTokenForAction(String token, String userId, String actionId) {
+        return service.getAccessToken("Bearer " + token, userId, actionId, Integer.MAX_VALUE);
     }
+
 }

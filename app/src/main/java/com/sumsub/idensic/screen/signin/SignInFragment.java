@@ -114,7 +114,6 @@ public class SignInFragment extends BaseFragment {
             @Override
             public void onResponse(@NotNull Call<PayloadResponse> call, @NotNull Response<PayloadResponse> response) {
                 App.getInstance().getPrefManager().setUsername(username);
-                App.getInstance().getPrefManager().setPassword(password);
                 App.getInstance().getPrefManager().setToken(response.body().getPayload());
 
                 NavHostFragment.findNavController(SignInFragment.this).navigate(R.id.action_sign_in_to_main);
