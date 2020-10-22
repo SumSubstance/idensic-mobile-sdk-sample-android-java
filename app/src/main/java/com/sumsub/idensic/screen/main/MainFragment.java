@@ -239,7 +239,6 @@ public class MainFragment extends BaseFragment {
 
     }
 
-
     private void launchSdk(String accessToken, String flowOrAction, TokenExpirationHandler tokenUpdater) {
 
         String apiUrl = BuildConfig.API_URL;
@@ -300,7 +299,6 @@ public class MainFragment extends BaseFragment {
         showProgress(false);
 
     }
-
 
     private void showProgress(boolean show) {
         gContent.setVisibility(show ? View.GONE : View.VISIBLE);
