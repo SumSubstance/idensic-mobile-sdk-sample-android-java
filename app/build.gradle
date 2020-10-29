@@ -34,12 +34,10 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.3'
 
-    implementation "com.sumsub.sns:idensic-mobile-sdk:1.13.2"
-    implementation "com.sumsub.sns:idensic-mobile-sdk-liveness3d:1.13.2"
-    implementation "com.sumsub.sns:idensic-mobile-sdk-prooface:1.13.2"
-    implementation "com.sumsub.sns:idensic-mobile-sdk-actions:1.13.2"
+    implementation "com.sumsub.sns:idensic-mobile-sdk:1.13.3"
+    implementation "com.sumsub.sns:idensic-mobile-sdk-liveness3d:1.13.3"
 
     def nav_version = "2.3.1"
 
