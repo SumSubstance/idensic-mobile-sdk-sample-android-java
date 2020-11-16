@@ -1,5 +1,6 @@
 package com.sumsub.idensic.screen.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -243,10 +244,11 @@ public class MainFragment extends BaseFragment {
 
         String apiUrl = BuildConfig.API_URL;
         List<SNSModule> modules = Arrays.asList(new SNSLiveness3d(), new SNSProoface());
+        Context applicationContext = requireContext().getApplicationContext();
 
         Function1<SNSException, Unit> onError = e -> {
             Timber.d("The SDK throws an exception. Exception: %s", e);
-            Toast.makeText(requireContext(), "The SDK throws an exception. Exception: $exception", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, "The SDK throws an exception. Exception: $exception", Toast.LENGTH_SHORT).show();
             return Unit.INSTANCE;
         };
 
@@ -278,7 +280,7 @@ public class MainFragment extends BaseFragment {
 
         Function2<SNSCompletionResult, SNSSDKState, Unit> onSDKCompletedHandler = (result, state) -> {
             Timber.d("The SDK is finished. Result: " + result + " , State: " + state);
-            Toast.makeText(requireContext(), "The SDK is finished. Result: $result, State: $state", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, "The SDK is finished. Result: $result, State: $state", Toast.LENGTH_SHORT).show();
 
             if (result instanceof SNSCompletionResult.SuccessTermination) {
                 Timber.d(result.toString());
