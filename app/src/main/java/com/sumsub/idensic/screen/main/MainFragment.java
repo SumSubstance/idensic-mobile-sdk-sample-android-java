@@ -16,6 +16,7 @@ import com.sumsub.idensic.common.Constants;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.screen.base.BaseFragment;
+import com.sumsub.sns.core.SNSActionResult;
 import com.sumsub.sns.core.SNSMobileSDK;
 import com.sumsub.sns.core.SNSModule;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
@@ -290,11 +291,16 @@ public class MainFragment extends BaseFragment {
             return Unit.INSTANCE;
         };
 
+        Function2<String, String, SNSActionResult> onActionResult = (actionId, answer) -> {
+            Timber.d("Action Result: actionId: " + actionId + ", answer: " + answer);
+            return SNSActionResult.Continue;
+        };
+
         SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity(), apiUrl, flowOrAction)
                 .withAccessToken(accessToken, tokenUpdater)
                 .withDebug(true)
                 .withModules(modules)
-                .withHandlers(onError, onStateChanged, onSDKCompletedHandler)
+                .withHandlers(onError, onStateChanged, onSDKCompletedHandler, onActionResult)
                 .build();
 
         snsSdk.launch();
