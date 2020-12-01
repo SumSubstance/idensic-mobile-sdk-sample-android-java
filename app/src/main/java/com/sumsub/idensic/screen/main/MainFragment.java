@@ -244,7 +244,7 @@ public class MainFragment extends BaseFragment {
     private void launchSdk(String accessToken, String flowOrAction, TokenExpirationHandler tokenUpdater) {
 
         String apiUrl = BuildConfig.API_URL;
-        List<SNSModule> modules = Arrays.asList(new SNSLiveness3d(), new SNSProoface());
+        List<SNSModule> modules = Arrays.asList(new SNSProoface(SNSProoface.FEATURE_FACE_SHOW_SETTINGS));
         Context applicationContext = requireContext().getApplicationContext();
 
         Function1<SNSException, Unit> onError = e -> {
