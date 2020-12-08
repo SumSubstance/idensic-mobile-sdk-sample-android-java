@@ -4,7 +4,7 @@ plugins {
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.sumsub.idensic"
@@ -38,10 +38,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    implementation "com.sumsub.sns:idensic-mobile-sdk:1.14.1"
-    implementation "com.sumsub.sns:idensic-mobile-sdk-liveness3d:1.14.1"
+    implementation "com.sumsub.sns:idensic-mobile-sdk:1.14.2"
+    implementation "com.sumsub.sns:idensic-mobile-sdk-liveness3d:1.14.2"
 
-    def nav_version = "2.3.1"
+    def nav_version = "2.3.2"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
