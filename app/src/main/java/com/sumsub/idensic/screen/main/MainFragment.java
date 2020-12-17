@@ -296,14 +296,20 @@ public class MainFragment extends BaseFragment {
             return SNSActionResult.Continue;
         };
 
-        SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity(), apiUrl, flowOrAction)
-                .withAccessToken(accessToken, tokenUpdater)
-                .withDebug(true)
-                .withModules(modules)
-                .withHandlers(onError, onStateChanged, onSDKCompletedHandler, onActionResult)
-                .build();
+        try {
 
-        snsSdk.launch();
+            SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity(), apiUrl, flowOrAction)
+                    .withAccessToken(accessToken, tokenUpdater)
+                    .withDebug(true)
+                    .withModules(modules)
+                    .withHandlers(onError, onStateChanged, onSDKCompletedHandler, onActionResult)
+                    .build();
+
+            snsSdk.launch();
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
         showProgress(false);
 
     }
