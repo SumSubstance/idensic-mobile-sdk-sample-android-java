@@ -2,6 +2,7 @@ package com.sumsub.idensic.manager;
 
 import com.sumsub.idensic.BuildConfig;
 import com.sumsub.idensic.model.AccessTokenResponse;
+import com.sumsub.idensic.model.FlowListResponse;
 import com.sumsub.idensic.model.PayloadResponse;
 import com.sumsub.idensic.network.ApiService;
 
@@ -45,4 +46,7 @@ public class ApiManager {
         return service.getAccessToken("Bearer " + token, userId, actionId, Integer.MAX_VALUE);
     }
 
+    public Call<FlowListResponse> getFlows(String authorizationToken) {
+        return service.getFlows("Bearer " + authorizationToken);
+    }
 }

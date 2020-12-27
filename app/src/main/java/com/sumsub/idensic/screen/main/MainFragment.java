@@ -1,13 +1,17 @@
 package com.sumsub.idensic.screen.main;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sumsub.idensic.App;
 import com.sumsub.idensic.BuildConfig;
@@ -15,11 +19,15 @@ import com.sumsub.idensic.R;
 import com.sumsub.idensic.common.Constants;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
+import com.sumsub.idensic.model.FlowItem;
+import com.sumsub.idensic.model.FlowList;
+import com.sumsub.idensic.model.FlowListResponse;
 import com.sumsub.idensic.screen.base.BaseFragment;
 import com.sumsub.sns.core.SNSActionResult;
 import com.sumsub.sns.core.SNSMobileSDK;
 import com.sumsub.sns.core.SNSModule;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
+import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
 import com.sumsub.sns.core.data.model.SNSException;
 import com.sumsub.sns.core.data.model.SNSSDKState;
@@ -28,7 +36,9 @@ import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,6 +65,8 @@ public class MainFragment extends BaseFragment {
     private TextInputEditText etActionId;
     private TextInputEditText etAccessTokenAction;
     private TextInputEditText etActionName;
+    private ImageButton ibSelectFlow;
+    private ImageButton ibSelectAction;
 
     private final TokenExpirationHandler sdkFlowAccessTokeExpirationHandler = () -> {
         PrefManager prefManager = App.getInstance().getPrefManager();
@@ -114,6 +126,8 @@ public class MainFragment extends BaseFragment {
         etActionName = view.findViewById(R.id.et_action_name);
         MaterialButton btnActionId = view.findViewById(R.id.btn_generate_action_id);
         MaterialButton btnStartAction = view.findViewById(R.id.btn_start_action);
+        ibSelectFlow = view.findViewById(R.id.ib_get_flows);
+        ibSelectAction = view.findViewById(R.id.ib_get_actions);
 
         showProgress(false);
         if (prefManager.getUserId() == null) {
@@ -141,6 +155,24 @@ public class MainFragment extends BaseFragment {
         btnStartFlow.setOnClickListener(v -> startSDKFlow());
         btnActionId.setOnClickListener(v -> generateActionId());
         btnStartAction.setOnClickListener(v -> startSDKAction());
+
+        ibSelectFlow.setOnClickListener(v -> {
+            String token = prefManager.getToken();
+            Filter<FlowItem> filter = item -> item.getTarget().equals("msdk") && item.getType() != FlowType.Actions;
+
+            loadFlows(token, filter, flowName -> {
+                etFlowName.setText(flowName);
+            });
+        });
+
+        ibSelectAction.setOnClickListener(v -> {
+            String token = prefManager.getToken();
+            Filter<FlowItem> filter = item -> item.getTarget().equals("msdk") && item.getType() == FlowType.Actions;
+
+            loadFlows(token, filter, flowName -> {
+                etActionName.setText(flowName);
+            });
+        });
     }
 
     private void generateUserId() {
@@ -329,8 +361,55 @@ public class MainFragment extends BaseFragment {
         App.getInstance().getPrefManager().setAccessTokenAction(accessToken);
     }
 
+    private void loadFlows(String authorizationToken, Filter<FlowItem> filter, FlowSelector selector) {
+        showProgress(true);
+        App.getInstance().getApiManager().getFlows(authorizationToken).enqueue(new Callback<FlowListResponse>() {
+
+            @Override
+            public void onResponse(Call<FlowListResponse> call, Response<FlowListResponse> response) {
+                showProgress(false);
+                try {
+                    Iterator<FlowItem> iterator = response.body().getList().getItems().iterator();
+                    ArrayList<CharSequence> items = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        FlowItem item = iterator.next();
+                        if (filter.filter(item)) {
+                            items.add(item.getName());
+                        }
+                    }
+
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setItems(items.toArray(new CharSequence[0]), (dialog, which) -> {
+                                dialog.dismiss();
+                                selector.onFlowSelected(items.get(which));
+                            })
+                            .create()
+                            .show();
+                } catch (Exception e) {
+                    Timber.e(e);
+                    Toast.makeText(requireContext(), "An error while getting flow list.\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FlowListResponse> call, Throwable t) {
+                showProgress(false);
+                Toast.makeText(requireContext(), "An error while getting flow list. Please, check your credentials", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     protected int getSoftInputMode() {
         return WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
     }
+
+    private interface Filter<T> {
+        boolean filter(T item);
+    }
+
+    private interface FlowSelector {
+        void onFlowSelected(CharSequence flowName);
+    }
+
 }

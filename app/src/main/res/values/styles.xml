@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/sns_blue</item>
         <item name="colorPrimaryVariant">@color/sns_blue_2</item>
@@ -22,6 +22,8 @@
         <item name="materialButtonStyle">@style/Widget.Button</item>
         <item name="toolbarStyle">@style/Widget.Toolbar</item>
         <item name="textInputStyle">@style/Widget.TextInputLayout</item>
+
+        <item name="imageButtonStyle">@style/ImageButtonStyle</item>
     </style>
 
     <style name="Widget"/>
@@ -48,7 +50,6 @@
 
     <style name="TextAppearance.TextInputLayout.Error" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">12sp</item>
-        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="TextAppearance.TextInputLayout.Hint" parent="TextAppearance.MaterialComponents.Caption">
@@ -70,5 +71,10 @@
 
     <style name="ShapeAppearance.TextInputLayout" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="ImageButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="tint">@color/sns_white</item>
+        <item name="android:background">@drawable/bg_image_button</item>
     </style>
 </resources>
