@@ -17,7 +17,7 @@ public class ApiManager {
 
     private final ApiService service;
 
-    public ApiManager() {
+    public ApiManager(String apiUrl) {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
 
@@ -26,7 +26,7 @@ public class ApiManager {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.API_URL)
+                .baseUrl(apiUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

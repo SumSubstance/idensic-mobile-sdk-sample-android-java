@@ -17,6 +17,7 @@ import com.sumsub.idensic.App;
 import com.sumsub.idensic.BuildConfig;
 import com.sumsub.idensic.R;
 import com.sumsub.idensic.common.Constants;
+import com.sumsub.idensic.manager.ApiManager;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.model.FlowItem;
@@ -42,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -67,6 +69,7 @@ public class MainFragment extends BaseFragment {
     private TextInputEditText etActionName;
     private ImageButton ibSelectFlow;
     private ImageButton ibSelectAction;
+    private ApiManager apiManager;
 
     private final TokenExpirationHandler sdkFlowAccessTokeExpirationHandler = () -> {
         PrefManager prefManager = App.getInstance().getPrefManager();
@@ -74,7 +77,7 @@ public class MainFragment extends BaseFragment {
         String userId = prefManager.getUserId();
 
         try {
-            String newAccessToken = App.getInstance().getApiManager().getAccessTokenForFlow(token, userId).execute().body().getToken();
+            String newAccessToken = apiManager.getAccessTokenForFlow(token, userId).execute().body().getToken();
             prefManager.setAccessToken(newAccessToken);
             return newAccessToken;
         } catch (Exception e) {
@@ -91,7 +94,7 @@ public class MainFragment extends BaseFragment {
         String actionId = prefManager.getActionId();
 
         try {
-            String newAccessToken = App.getInstance().getApiManager().getAccessTokenForAction(token, userId, actionId).execute().body().getToken();
+            String newAccessToken = apiManager.getAccessTokenForAction(token, userId, actionId).execute().body().getToken();
             prefManager.setAccessTokenAction(newAccessToken);
             return newAccessToken;
         } catch (Exception e) {
@@ -106,10 +109,28 @@ public class MainFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().finish();
+            }
+        });
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         PrefManager prefManager = App.getInstance().getPrefManager();
+        String apiUrl = prefManager.getUrl();
+        if (apiUrl == null) {
+            NavHostFragment.findNavController(MainFragment.this).navigate(R.id.action_main_to_sign_in);
+            return;
+        }
+
+        apiManager = new ApiManager(apiUrl);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         gContent = view.findViewById(R.id.g_content);
@@ -143,7 +164,7 @@ public class MainFragment extends BaseFragment {
 
         toolbar.setOnMenuItemClickListener(item -> {
             // Clear cache
-            prefManager.setUsername(null);
+            prefManager.setUrl(null);
             prefManager.setToken(null);
             prefManager.setAccessToken(null);
             prefManager.setAccessTokenAction(null);
@@ -205,7 +226,7 @@ public class MainFragment extends BaseFragment {
 
         showProgress(true);
 
-        App.getInstance().getApiManager().getAccessTokenForFlow(token, userId).enqueue(new Callback<AccessTokenResponse>() {
+        apiManager.getAccessTokenForFlow(token, userId).enqueue(new Callback<AccessTokenResponse>() {
             @Override
             public void onResponse(@NotNull Call<AccessTokenResponse> call, @NotNull Response<AccessTokenResponse> response) {
                 String accessToken = response.body().getToken();
@@ -251,7 +272,7 @@ public class MainFragment extends BaseFragment {
 
         showProgress(true);
 
-        App.getInstance().getApiManager().getAccessTokenForAction(token, userId, actionId).enqueue(new Callback<AccessTokenResponse>() {
+        apiManager.getAccessTokenForAction(token, userId, actionId).enqueue(new Callback<AccessTokenResponse>() {
             @Override
             public void onResponse(@NotNull Call<AccessTokenResponse> call, @NotNull Response<AccessTokenResponse> response) {
                 String accessToken = response.body().getToken();
@@ -275,7 +296,8 @@ public class MainFragment extends BaseFragment {
 
     private void launchSdk(String accessToken, String flowOrAction, TokenExpirationHandler tokenUpdater) {
 
-        String apiUrl = BuildConfig.API_URL;
+        PrefManager prefManager = App.getInstance().getPrefManager();
+        String apiUrl = prefManager.getUrl();
         List<SNSModule> modules = Arrays.asList(new SNSProoface(SNSProoface.FEATURE_FACE_SHOW_SETTINGS));
         Context applicationContext = requireContext().getApplicationContext();
 
@@ -363,7 +385,7 @@ public class MainFragment extends BaseFragment {
 
     private void loadFlows(String authorizationToken, Filter<FlowItem> filter, FlowSelector selector) {
         showProgress(true);
-        App.getInstance().getApiManager().getFlows(authorizationToken).enqueue(new Callback<FlowListResponse>() {
+        apiManager.getFlows(authorizationToken).enqueue(new Callback<FlowListResponse>() {
 
             @Override
             public void onResponse(Call<FlowListResponse> call, Response<FlowListResponse> response) {

@@ -13,13 +13,13 @@ public class PrefManager {
         mPrefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
     }
 
-    public void setUsername(String name) {
-        mPrefs.edit().putString(KEY_USER_USERNAME, name).apply();
+    public void setUrl(String url) {
+        mPrefs.edit().putString(KEY_URL, url).apply();
     }
 
     @Nullable
-    public String getUsername() {
-        return mPrefs.getString(KEY_USER_USERNAME, null);
+    public String getUrl() {
+        return mPrefs.getString(KEY_URL, null);
     }
 
     public void setToken(String token) {
@@ -67,7 +67,7 @@ public class PrefManager {
         return mPrefs.getString(KEY_ACCESS_TOKEN_ACTION, null);
     }
 
-    private static final String KEY_USER_USERNAME = "user_username";
+    private static final String KEY_URL = "url";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_ACCESS_TOKEN_ACTION = "access_token_action";

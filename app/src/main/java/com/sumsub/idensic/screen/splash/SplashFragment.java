@@ -7,6 +7,8 @@ import com.sumsub.idensic.App;
 import com.sumsub.idensic.R;
 import com.sumsub.idensic.screen.base.BaseFragment;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
@@ -22,9 +24,9 @@ public class SplashFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         getHandler().postDelayed(() -> {
-            boolean loggedIn = App.getInstance().getPrefManager().getUsername() != null;
+            boolean loggedIn = App.getInstance().getPrefManager().getToken() != null;
             int actionId = loggedIn ? R.id.action_splash_to_main : R.id.action_splash_to_sign_in;
             NavHostFragment.findNavController(SplashFragment.this).navigate(actionId);
-        }, 3000);
+        }, TimeUnit.SECONDS.toMillis(1));
     }
 }
