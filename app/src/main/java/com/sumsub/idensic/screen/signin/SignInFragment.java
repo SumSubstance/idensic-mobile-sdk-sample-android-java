@@ -19,6 +19,7 @@ import com.sumsub.idensic.R;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.screen.base.BaseFragment;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
@@ -46,6 +47,15 @@ public class SignInFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
+        });
+
         cvCamera = view.findViewById(R.id.camera);
         initCamera();
     }
@@ -53,12 +63,7 @@ public class SignInFragment extends BaseFragment {
     private void initCamera() {
 
         cvCamera.setLifecycleOwner(this);
-        cvCamera.addFrameProcessor(new FrameProcessor() {
-            @Override
-            public void process(@NonNull Frame frame) {
-                processImage(frame.getFormat(), frame.getRotationToView(), frame.getSize().getWidth(), frame.getSize().getHeight(), frame.getData());
-            }
-        });
+        cvCamera.addFrameProcessor(frame -> processImage(frame.getFormat(), frame.getRotationToView(), frame.getSize().getWidth(), frame.getSize().getHeight(), frame.getData()));
 
     }
 

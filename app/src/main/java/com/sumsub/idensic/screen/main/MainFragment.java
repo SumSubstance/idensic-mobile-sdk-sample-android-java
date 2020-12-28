@@ -1,9 +1,7 @@
 package com.sumsub.idensic.screen.main;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -14,14 +12,12 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sumsub.idensic.App;
-import com.sumsub.idensic.BuildConfig;
 import com.sumsub.idensic.R;
 import com.sumsub.idensic.common.Constants;
 import com.sumsub.idensic.manager.ApiManager;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.model.FlowItem;
-import com.sumsub.idensic.model.FlowList;
 import com.sumsub.idensic.model.FlowListResponse;
 import com.sumsub.idensic.screen.base.BaseFragment;
 import com.sumsub.sns.core.SNSActionResult;
@@ -32,7 +28,6 @@ import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
 import com.sumsub.sns.core.data.model.SNSException;
 import com.sumsub.sns.core.data.model.SNSSDKState;
-import com.sumsub.sns.liveness3d.SNSLiveness3d;
 import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
@@ -114,7 +109,9 @@ public class MainFragment extends BaseFragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                requireActivity().finish();
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
             }
         });
     }
