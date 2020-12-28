@@ -2,11 +2,14 @@ package com.sumsub.idensic.screen.signin;
 
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.Keep;
+
+@Keep
 class LoginData {
     @SerializedName("url")
-    String url;
+    private String url;
     @SerializedName("t")
-    String t;
+    private String t;
 
     public LoginData(String url, String t) {
         this.url = url;
