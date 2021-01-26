@@ -23,10 +23,15 @@ import com.sumsub.idensic.screen.base.BaseFragment;
 import com.sumsub.sns.core.SNSActionResult;
 import com.sumsub.sns.core.SNSMobileSDK;
 import com.sumsub.sns.core.SNSModule;
+import com.sumsub.sns.core.data.listener.SNSActionResultHandler;
+import com.sumsub.sns.core.data.listener.SNSCompleteHandler;
+import com.sumsub.sns.core.data.listener.SNSErrorHandler;
+import com.sumsub.sns.core.data.listener.SNSStateChangedHandler;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
+import com.sumsub.sns.core.data.model.AnswerType;
+import com.sumsub.sns.core.data.model.FlowActionType;
 import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
-import com.sumsub.sns.core.data.model.SNSException;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.prooface.SNSProoface;
 
@@ -36,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import androidx.activity.OnBackPressedCallback;
@@ -44,9 +50,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.Group;
 import androidx.navigation.fragment.NavHostFragment;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function2;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -298,39 +301,45 @@ public class MainFragment extends BaseFragment {
         List<SNSModule> modules = Arrays.asList(new SNSProoface(SNSProoface.FEATURE_FACE_SHOW_SETTINGS));
         Context applicationContext = requireContext().getApplicationContext();
 
-        Function1<SNSException, Unit> onError = e -> {
+        SNSErrorHandler errorHandler = e -> {
             Timber.d("The SDK throws an exception. Exception: %s", e);
             Toast.makeText(applicationContext, "The SDK throws an exception. Exception: $exception", Toast.LENGTH_SHORT).show();
-            return Unit.INSTANCE;
         };
 
-        Function2<SNSSDKState, SNSSDKState, Unit> onStateChanged = (newState, prevState) -> {
-            Timber.d("The SDK state was changed: " + prevState + " -> " + newState);
+        SNSStateChangedHandler stateChangedHandler = (previousState, currentState) -> {
 
-            if (newState instanceof SNSSDKState.Ready) {
+            Timber.d("The SDK state was changed: " + previousState + " -> " + currentState);
+
+            if (currentState instanceof SNSSDKState.Ready) {
                 Timber.d("SDK is ready");
-            } else if (newState instanceof SNSSDKState.Failed.Unauthorized) {
-                Timber.e(((SNSSDKState.Failed.Unauthorized) newState).getException(), "Invalid token or a token can't be refreshed by the SDK. Please, check your token expiration handler");
-            } else if (newState instanceof SNSSDKState.Failed.Unknown) {
-                Timber.e(((SNSSDKState.Failed.Unknown) newState).getException(), "Unknown error");
-            } else if (newState instanceof SNSSDKState.Initial) {
+            } else if (currentState instanceof SNSSDKState.Failed.Unauthorized) {
+                Timber.e(((SNSSDKState.Failed.Unauthorized) currentState).getException(), "Invalid token or a token can't be refreshed by the SDK. Please, check your token expiration handler");
+            } else if (currentState instanceof SNSSDKState.Failed.Unknown) {
+                Timber.e(((SNSSDKState.Failed.Unknown) currentState).getException(), "Unknown error");
+            } else if (currentState instanceof SNSSDKState.Initial) {
                 Timber.d("No verification steps are passed yet");
-            } else if (newState instanceof SNSSDKState.Incomplete) {
+            } else if (currentState instanceof SNSSDKState.Incomplete) {
                 Timber.d("Some but not all verification steps are passed over");
-            } else if (newState instanceof SNSSDKState.Pending) {
+            } else if (currentState instanceof SNSSDKState.Pending) {
                 Timber.d("Verification is in pending state");
-            } else if (newState instanceof SNSSDKState.FinallyRejected) {
+            } else if (currentState instanceof SNSSDKState.FinallyRejected) {
                 Timber.d("Applicant has been finally rejected");
-            } else if (newState instanceof SNSSDKState.TemporarilyDeclined) {
+            } else if (currentState instanceof SNSSDKState.TemporarilyDeclined) {
                 Timber.d("Applicant has been declined temporarily");
-            } else if (newState instanceof SNSSDKState.Approved) {
+            } else if (currentState instanceof SNSSDKState.Approved) {
                 Timber.d("Applicant has been approved");
             }
 
-            return Unit.INSTANCE;
+            if (currentState instanceof SNSSDKState.ActionCompleted) {
+                SNSSDKState.ActionCompleted actionState = (SNSSDKState.ActionCompleted) currentState;
+                String actionId = actionState.getActionId();
+                FlowActionType type = actionState.getType();
+                AnswerType answer = actionState.getAnswer();
+                Map<String, Object> payload = actionState.getPayload();
+            }
         };
 
-        Function2<SNSCompletionResult, SNSSDKState, Unit> onSDKCompletedHandler = (result, state) -> {
+        SNSCompleteHandler completeHandler = (result, state) -> {
             Timber.d("The SDK is finished. Result: " + result + " , State: " + state);
             Toast.makeText(applicationContext, "The SDK is finished. Result: $result, State: $state", Toast.LENGTH_SHORT).show();
 
@@ -339,10 +348,9 @@ public class MainFragment extends BaseFragment {
             } else if (result instanceof SNSCompletionResult.AbnormalTermination) {
                 Timber.d(((SNSCompletionResult.AbnormalTermination) result).getException());
             }
-            return Unit.INSTANCE;
         };
 
-        Function2<String, String, SNSActionResult> onActionResult = (actionId, answer) -> {
+        SNSActionResultHandler actionResultHandler = (actionId, actionType, answer, allowContinuing) -> {
             Timber.d("Action Result: actionId: " + actionId + ", answer: " + answer);
             return SNSActionResult.Continue;
         };
@@ -353,7 +361,10 @@ public class MainFragment extends BaseFragment {
                     .withAccessToken(accessToken, tokenUpdater)
                     .withDebug(true)
                     .withModules(modules)
-                    .withHandlers(onError, onStateChanged, onSDKCompletedHandler, onActionResult)
+                    .withCompleteHandler(completeHandler)
+                    .withErrorHandler(errorHandler)
+                    .withStateChangedHandler(stateChangedHandler)
+                    .withActionResultHandler(actionResultHandler)
                     .build();
 
             snsSdk.launch();
