@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepattributes *Annotation*
+-keep class com.sumsub.idensic.model.FlowListResponse { *; }
+-keep class com.sumsub.idensic.model.FlowList { *; }
+-keep class com.sumsub.idensic.model.FlowItem { *; }

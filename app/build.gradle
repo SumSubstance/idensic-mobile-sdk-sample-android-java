@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 11600
-        versionName "1.16.0"
+        versionCode 11601
+        versionName "1.16.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,7 +38,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.mlkit:barcode-scanning:16.0.3'
 
-    implementation "com.sumsub.sns:idensic-mobile-sdk:1.16.0"
+    implementation "com.sumsub.sns:idensic-mobile-sdk:1.16.1"
 
     def nav_version = "2.3.3"
 
