@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 11601
-        versionName "1.16.1"
+        targetSdkVersion 30
+        versionCode 11700
+        versionName "1.17.0"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -38,9 +38,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.mlkit:barcode-scanning:16.0.3'
 
-    implementation "com.sumsub.sns:idensic-mobile-sdk:1.16.1"
+    implementation "com.sumsub.sns:idensic-mobile-sdk:1.17.0"
 
-    def nav_version = "2.3.3"
+    def nav_version = "2.3.4"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"

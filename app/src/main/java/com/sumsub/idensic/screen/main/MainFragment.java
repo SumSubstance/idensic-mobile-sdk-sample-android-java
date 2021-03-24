@@ -26,6 +26,8 @@ import com.sumsub.sns.core.SNSModule;
 import com.sumsub.sns.core.data.listener.SNSActionResultHandler;
 import com.sumsub.sns.core.data.listener.SNSCompleteHandler;
 import com.sumsub.sns.core.data.listener.SNSErrorHandler;
+import com.sumsub.sns.core.data.listener.SNSEvent;
+import com.sumsub.sns.core.data.listener.SNSEventHandler;
 import com.sumsub.sns.core.data.listener.SNSStateChangedHandler;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
 import com.sumsub.sns.core.data.model.AnswerType;
@@ -355,8 +357,15 @@ public class MainFragment extends BaseFragment {
             return SNSActionResult.Continue;
         };
 
-        try {
+        SNSEventHandler eventHandler = snsEvent -> {
+            if (snsEvent instanceof SNSEvent.SNSEventStepInitiated) {
+                Timber.d("onEvent: step initiated");
+            } else if (snsEvent instanceof SNSEvent.SNSEventStepCompleted) {
+                Timber.d("onEvent: step completed");
+            }
+        };
 
+        try {
             SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity(), apiUrl, flowOrAction)
                     .withAccessToken(accessToken, tokenUpdater)
                     .withDebug(true)
@@ -365,6 +374,7 @@ public class MainFragment extends BaseFragment {
                     .withErrorHandler(errorHandler)
                     .withStateChangedHandler(stateChangedHandler)
                     .withActionResultHandler(actionResultHandler)
+                    .withEventHandler(eventHandler)
                     .build();
 
             snsSdk.launch();
