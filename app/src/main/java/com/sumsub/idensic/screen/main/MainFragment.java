@@ -300,7 +300,7 @@ public class MainFragment extends BaseFragment {
 
         PrefManager prefManager = App.getInstance().getPrefManager();
         String apiUrl = prefManager.getUrl();
-        List<SNSModule> modules = Arrays.asList(new SNSProoface(SNSProoface.FEATURE_FACE_SHOW_SETTINGS));
+        List<SNSModule> modules = Arrays.asList(new SNSProoface());
         Context applicationContext = requireContext().getApplicationContext();
 
         SNSErrorHandler errorHandler = e -> {
