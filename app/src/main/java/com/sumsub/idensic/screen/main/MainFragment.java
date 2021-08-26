@@ -1,6 +1,7 @@
 package com.sumsub.idensic.screen.main;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,7 +19,9 @@ import com.sumsub.idensic.manager.ApiManager;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.model.FlowItem;
-import com.sumsub.idensic.model.FlowListResponse;
+import com.sumsub.idensic.model.Level;
+import com.sumsub.idensic.model.LevelItem;
+import com.sumsub.idensic.model.LevelListResponse;
 import com.sumsub.idensic.screen.base.BaseFragment;
 import com.sumsub.sns.core.SNSActionResult;
 import com.sumsub.sns.core.SNSMobileSDK;
@@ -63,11 +66,11 @@ public class MainFragment extends BaseFragment {
     private ProgressBar pbProgress;
     private TextInputEditText etUserId;
     private TextInputEditText etAccessToken;
-    private TextInputEditText etFlowName;
+    private TextInputEditText etLevelName;
     private TextInputEditText etActionId;
     private TextInputEditText etAccessTokenAction;
     private TextInputEditText etActionName;
-    private ImageButton ibSelectFlow;
+    private ImageButton ibSelectLevel;
     private ImageButton ibSelectAction;
     private ApiManager apiManager;
 
@@ -75,9 +78,10 @@ public class MainFragment extends BaseFragment {
         PrefManager prefManager = App.getInstance().getPrefManager();
         String token = prefManager.getToken();
         String userId = prefManager.getUserId();
+        String levelName = etLevelName.getText().toString();
 
         try {
-            String newAccessToken = apiManager.getAccessTokenForFlow(token, userId).execute().body().getToken();
+            String newAccessToken = apiManager.getAccessTokenForLevel(token, userId, levelName).execute().body().getToken();
             prefManager.setAccessToken(newAccessToken);
             return newAccessToken;
         } catch (Exception e) {
@@ -92,9 +96,10 @@ public class MainFragment extends BaseFragment {
         String token = prefManager.getToken();
         String userId = prefManager.getUserId();
         String actionId = prefManager.getActionId();
+        String levelName = etLevelName.getText().toString();
 
         try {
-            String newAccessToken = apiManager.getAccessTokenForAction(token, userId, actionId).execute().body().getToken();
+            String newAccessToken = apiManager.getAccessTokenForAction(token, userId, actionId, levelName).execute().body().getToken();
             prefManager.setAccessTokenAction(newAccessToken);
             return newAccessToken;
         } catch (Exception e) {
@@ -140,16 +145,16 @@ public class MainFragment extends BaseFragment {
         etUserId = view.findViewById(R.id.et_userid);
         etUserId.setText(prefManager.getUserId());
         etAccessToken = view.findViewById(R.id.et_access_token);
-        etFlowName = view.findViewById(R.id.et_flow_name);
+        etLevelName = view.findViewById(R.id.et_level_name);
         MaterialButton btnUserId = view.findViewById(R.id.btn_generate_userid);
-        MaterialButton btnStartFlow = view.findViewById(R.id.btn_start_flow);
+        MaterialButton btnStartFlow = view.findViewById(R.id.btn_start_level);
         etActionId = view.findViewById(R.id.et_actionid);
         etActionId.setText(prefManager.getActionId());
         etAccessTokenAction = view.findViewById(R.id.et_access_token_action);
         etActionName = view.findViewById(R.id.et_action_name);
         MaterialButton btnActionId = view.findViewById(R.id.btn_generate_action_id);
         MaterialButton btnStartAction = view.findViewById(R.id.btn_start_action);
-        ibSelectFlow = view.findViewById(R.id.ib_get_flows);
+        ibSelectLevel = view.findViewById(R.id.ib_get_levels);
         ibSelectAction = view.findViewById(R.id.ib_get_actions);
 
         showProgress(false);
@@ -179,21 +184,21 @@ public class MainFragment extends BaseFragment {
         btnActionId.setOnClickListener(v -> generateActionId());
         btnStartAction.setOnClickListener(v -> startSDKAction());
 
-        ibSelectFlow.setOnClickListener(v -> {
+        ibSelectLevel.setOnClickListener(v -> {
             String token = prefManager.getToken();
-            Filter<FlowItem> filter = item -> item.getTarget().equals("msdk") && item.getType() != FlowType.Actions;
+            Filter<Level> filter = item -> !item.isAction();
 
-            loadFlows(token, filter, flowName -> {
-                etFlowName.setText(flowName);
+            loadLevels(token, filter, levelName -> {
+                etLevelName.setText(levelName);
             });
         });
 
         ibSelectAction.setOnClickListener(v -> {
             String token = prefManager.getToken();
-            Filter<FlowItem> filter = item -> item.getTarget().equals("msdk") && item.getType() == FlowType.Actions;
+            Filter<Level> filter = Level::isAction;
 
-            loadFlows(token, filter, flowName -> {
-                etActionName.setText(flowName);
+            loadLevels(token, filter, levelName -> {
+                etActionName.setText(levelName);
             });
         });
     }
@@ -214,7 +219,7 @@ public class MainFragment extends BaseFragment {
         PrefManager prefManager = App.getInstance().getPrefManager();
         String token = prefManager.getToken();
         String userId = prefManager.getUserId();
-        String flow = etFlowName.getText().toString();
+        String levelName = etLevelName.getText().toString();
 
         if (token == null || token.isEmpty()) {
             Toast.makeText(requireContext(), "A token is empty", Toast.LENGTH_SHORT).show();
@@ -228,13 +233,13 @@ public class MainFragment extends BaseFragment {
 
         showProgress(true);
 
-        apiManager.getAccessTokenForFlow(token, userId).enqueue(new Callback<AccessTokenResponse>() {
+        apiManager.getAccessTokenForLevel(token, userId, levelName).enqueue(new Callback<AccessTokenResponse>() {
             @Override
             public void onResponse(@NotNull Call<AccessTokenResponse> call, @NotNull Response<AccessTokenResponse> response) {
                 String accessToken = response.body().getToken();
                 if (accessToken != null) {
                     setAccessToken(accessToken);
-                    launchSdk(accessToken, flow, sdkFlowAccessTokeExpirationHandler);
+                    launchSdk(accessToken, sdkFlowAccessTokeExpirationHandler);
                 } else {
                     showProgress(false);
                     Toast.makeText(requireContext(), "An error while getting an access token. Please, check your credentials", Toast.LENGTH_SHORT).show();
@@ -255,7 +260,7 @@ public class MainFragment extends BaseFragment {
         String token = prefManager.getToken();
         String userId = etUserId.getText().toString();
         String actionId = etActionId.getText().toString();
-        String action = etActionName.getText().toString();
+        String levelName = etLevelName.getText().toString();
 
         if (token == null || token.isEmpty()) {
             Toast.makeText(requireContext(), "A token is empty", Toast.LENGTH_SHORT).show();
@@ -274,13 +279,13 @@ public class MainFragment extends BaseFragment {
 
         showProgress(true);
 
-        apiManager.getAccessTokenForAction(token, userId, actionId).enqueue(new Callback<AccessTokenResponse>() {
+        apiManager.getAccessTokenForAction(token, userId, actionId, levelName).enqueue(new Callback<AccessTokenResponse>() {
             @Override
             public void onResponse(@NotNull Call<AccessTokenResponse> call, @NotNull Response<AccessTokenResponse> response) {
                 String accessToken = response.body().getToken();
                 if (accessToken != null) {
                     setAccessTokenAction(accessToken);
-                    launchSdk(accessToken, action, sdkActionAccessTokeExpirationHandler);
+                    launchSdk(accessToken, sdkActionAccessTokeExpirationHandler);
                 } else {
                     showProgress(false);
                     Toast.makeText(requireContext(), "An error while getting an access token. Please, check your credentials", Toast.LENGTH_SHORT).show();
@@ -296,7 +301,7 @@ public class MainFragment extends BaseFragment {
 
     }
 
-    private void launchSdk(String accessToken, String flowOrAction, TokenExpirationHandler tokenUpdater) {
+    private void launchSdk(String accessToken, TokenExpirationHandler tokenUpdater) {
 
         PrefManager prefManager = App.getInstance().getPrefManager();
         String apiUrl = prefManager.getUrl();
@@ -305,7 +310,7 @@ public class MainFragment extends BaseFragment {
 
         SNSErrorHandler errorHandler = e -> {
             Timber.d("The SDK throws an exception. Exception: %s", e);
-            Toast.makeText(applicationContext, "The SDK throws an exception. Exception: $exception", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, "The SDK throws an exception. Exception: " + e, Toast.LENGTH_SHORT).show();
         };
 
         SNSStateChangedHandler stateChangedHandler = (previousState, currentState) -> {
@@ -343,7 +348,7 @@ public class MainFragment extends BaseFragment {
 
         SNSCompleteHandler completeHandler = (result, state) -> {
             Timber.d("The SDK is finished. Result: " + result + " , State: " + state);
-            Toast.makeText(applicationContext, "The SDK is finished. Result: $result, State: $state", Toast.LENGTH_SHORT).show();
+            Toast.makeText(applicationContext, "The SDK is finished. Result: " + result + ", State: " + state, Toast.LENGTH_SHORT).show();
 
             if (result instanceof SNSCompletionResult.SuccessTermination) {
                 Timber.d(result.toString());
@@ -366,7 +371,8 @@ public class MainFragment extends BaseFragment {
         };
 
         try {
-            SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity(), apiUrl, flowOrAction)
+            SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity())
+                    .withBaseUrl(apiUrl)
                     .withAccessToken(accessToken, tokenUpdater)
                     .withDebug(true)
                     .withModules(modules)
@@ -401,42 +407,9 @@ public class MainFragment extends BaseFragment {
         App.getInstance().getPrefManager().setAccessTokenAction(accessToken);
     }
 
-    private void loadFlows(String authorizationToken, Filter<FlowItem> filter, FlowSelector selector) {
+    private void loadLevels(String authorizationToken, Filter<Level> filter, LevelSelector selector) {
         showProgress(true);
-        apiManager.getFlows(authorizationToken).enqueue(new Callback<FlowListResponse>() {
-
-            @Override
-            public void onResponse(Call<FlowListResponse> call, Response<FlowListResponse> response) {
-                showProgress(false);
-                try {
-                    Iterator<FlowItem> iterator = response.body().getList().getItems().iterator();
-                    ArrayList<CharSequence> items = new ArrayList<>();
-                    while (iterator.hasNext()) {
-                        FlowItem item = iterator.next();
-                        if (filter.filter(item)) {
-                            items.add(item.getName());
-                        }
-                    }
-
-                    new MaterialAlertDialogBuilder(requireContext())
-                            .setItems(items.toArray(new CharSequence[0]), (dialog, which) -> {
-                                dialog.dismiss();
-                                selector.onFlowSelected(items.get(which));
-                            })
-                            .create()
-                            .show();
-                } catch (Exception e) {
-                    Timber.e(e);
-                    Toast.makeText(requireContext(), "An error while getting flow list.\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<FlowListResponse> call, Throwable t) {
-                showProgress(false);
-                Toast.makeText(requireContext(), "An error while getting flow list. Please, check your credentials", Toast.LENGTH_SHORT).show();
-            }
-        });
+        new LoadLevelsTask(filter, selector).execute(authorizationToken);
     }
 
     @Override
@@ -448,8 +421,69 @@ public class MainFragment extends BaseFragment {
         boolean filter(T item);
     }
 
-    private interface FlowSelector {
-        void onFlowSelected(CharSequence flowName);
+    private interface LevelSelector {
+        void onLevelSelected(CharSequence flowName);
     }
 
+
+    private class LoadLevelsTask extends AsyncTask<String, Void, List<CharSequence>> {
+        private Filter<Level> filter;
+        private LevelSelector selector;
+
+        LoadLevelsTask(Filter<Level> filter, LevelSelector selector) {
+            this.filter = filter;
+            this.selector = selector;
+        }
+
+        @Override
+        protected List<CharSequence> doInBackground(String... strings) {
+            try {
+                String authorizationToken = strings[0];
+                Response<LevelListResponse> response = apiManager.getLevels(authorizationToken).execute();
+                Iterator<LevelItem> iterator = response.body().getList().getItems().iterator();
+                ArrayList<CharSequence> items = new ArrayList<>();
+                while (iterator.hasNext()) {
+                    LevelItem item = iterator.next();
+                    if (item.getId() != null && item.getName() != null) {
+                        boolean isAction = false;
+                        if (item.getMsdkFlowId() != null) {
+                            FlowItem flow = apiManager.getFlow(authorizationToken, item.getMsdkFlowId()).execute().body();
+                            if (flow != null && flow.getType() == FlowType.Actions) isAction = true;
+                        }
+
+                        Level level = new Level(item.getId(), item.getName(), isAction);
+                        if (filter.filter(level)) {
+                            items.add(item.getName());
+                        }
+                    }
+                }
+                return items;
+            } catch (Exception e) {
+                Timber.e(e);
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showProgress(true);
+        }
+
+        @Override
+        protected void onPostExecute(List<CharSequence> items) {
+            showProgress(false);
+            if (items != null) {
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setItems(items.toArray(new CharSequence[0]), (dialog, which) -> {
+                            dialog.dismiss();
+                            selector.onLevelSelected(items.get(which));
+                        })
+                        .create()
+                        .show();
+            }
+
+        }
+
+    }
 }
