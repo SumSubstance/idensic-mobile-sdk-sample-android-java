@@ -96,7 +96,7 @@ public class MainFragment extends BaseFragment {
         String token = prefManager.getToken();
         String userId = prefManager.getUserId();
         String actionId = prefManager.getActionId();
-        String levelName = etLevelName.getText().toString();
+        String levelName = etActionName.getText().toString();
 
         try {
             String newAccessToken = apiManager.getAccessTokenForAction(token, userId, actionId, levelName).execute().body().getToken();
@@ -260,7 +260,7 @@ public class MainFragment extends BaseFragment {
         String token = prefManager.getToken();
         String userId = etUserId.getText().toString();
         String actionId = etActionId.getText().toString();
-        String levelName = etLevelName.getText().toString();
+        String levelName = etActionName.getText().toString();
 
         if (token == null || token.isEmpty()) {
             Toast.makeText(requireContext(), "A token is empty", Toast.LENGTH_SHORT).show();
