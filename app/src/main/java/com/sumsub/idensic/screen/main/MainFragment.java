@@ -37,6 +37,7 @@ import com.sumsub.sns.core.data.model.AnswerType;
 import com.sumsub.sns.core.data.model.FlowActionType;
 import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
+import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.prooface.SNSProoface;
 
@@ -309,7 +310,7 @@ public class MainFragment extends BaseFragment {
         Context applicationContext = requireContext().getApplicationContext();
 
         SNSErrorHandler errorHandler = e -> {
-            Timber.d("The SDK throws an exception. Exception: %s", e);
+            Timber.d(e, "The SDK throws an exception.");
             Toast.makeText(applicationContext, "The SDK throws an exception. Exception: " + e, Toast.LENGTH_SHORT).show();
         };
 
@@ -381,6 +382,7 @@ public class MainFragment extends BaseFragment {
                     .withStateChangedHandler(stateChangedHandler)
                     .withActionResultHandler(actionResultHandler)
                     .withEventHandler(eventHandler)
+                    .withConf(new SNSInitConfig("user@email.com", "+11231234567"))
                     .build();
 
             snsSdk.launch();
