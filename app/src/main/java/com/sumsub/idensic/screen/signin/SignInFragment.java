@@ -2,14 +2,15 @@ package com.sumsub.idensic.screen.signin;
 
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.google.gson.Gson;
-import com.google.mlkit.vision.barcode.Barcode;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.otaliastudios.cameraview.CameraView;
 import com.sumsub.idensic.App;
@@ -22,12 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 
+import timber.log.Timber;
+
 public class SignInFragment extends BaseFragment {
 
     private CameraView cvCamera;
     private BarcodeScanner scanner;
-
-    private static final String TAG = "SignInFragment";
 
     public SignInFragment() {
         super(R.layout.fragment_sign_in);
@@ -85,6 +86,7 @@ public class SignInFragment extends BaseFragment {
                         scanner = null;
                     }
                 } catch (Exception e) {
+                    Timber.e(Log.getStackTraceString(e));
                 }
             }
         });

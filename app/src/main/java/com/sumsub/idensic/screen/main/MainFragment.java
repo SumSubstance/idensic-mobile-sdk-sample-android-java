@@ -31,6 +31,7 @@ import com.sumsub.sns.core.data.listener.SNSCompleteHandler;
 import com.sumsub.sns.core.data.listener.SNSErrorHandler;
 import com.sumsub.sns.core.data.listener.SNSEvent;
 import com.sumsub.sns.core.data.listener.SNSEventHandler;
+import com.sumsub.sns.core.data.listener.SNSIconHandler;
 import com.sumsub.sns.core.data.listener.SNSStateChangedHandler;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
 import com.sumsub.sns.core.data.model.AnswerType;
@@ -39,12 +40,14 @@ import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
 import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
+import com.sumsub.sns.core.data.model.SNSSupportItem;
 import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +59,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.Group;
 import androidx.navigation.fragment.NavHostFragment;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -342,7 +346,7 @@ public class MainFragment extends BaseFragment {
                 SNSSDKState.ActionCompleted actionState = (SNSSDKState.ActionCompleted) currentState;
                 String actionId = actionState.getActionId();
                 FlowActionType type = actionState.getType();
-                AnswerType answer = actionState.getAnswer();
+                String answer = actionState.getAnswer();
                 Map<String, Object> payload = actionState.getPayload();
             }
         };
@@ -371,7 +375,18 @@ public class MainFragment extends BaseFragment {
             }
         };
 
+        SNSSupportItem supportItem = new SNSSupportItem(
+                R.string.sns_support_title,
+                R.string.sns_support_subtitle,
+                SNSSupportItem.Type.Email,
+                "support@company.com",
+                null,
+                SNSIconHandler.SNSCommonIcons.MAIL.getImageName(),
+                null
+        );
+
         try {
+
             SNSMobileSDK.SDK snsSdk = new SNSMobileSDK.Builder(requireActivity())
                     .withBaseUrl(apiUrl)
                     .withAccessToken(accessToken, tokenUpdater)
@@ -382,6 +397,7 @@ public class MainFragment extends BaseFragment {
                     .withStateChangedHandler(stateChangedHandler)
                     .withActionResultHandler(actionResultHandler)
                     .withEventHandler(eventHandler)
+                    .withSupportItems(Collections.singletonList(supportItem))
                     .withConf(new SNSInitConfig("user@email.com", "+11231234567"))
                     .build();
 
