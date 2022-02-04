@@ -19,6 +19,7 @@ import com.sumsub.idensic.manager.ApiManager;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.model.FlowItem;
+import com.sumsub.idensic.model.FlowListResponse;
 import com.sumsub.idensic.model.Level;
 import com.sumsub.idensic.model.LevelItem;
 import com.sumsub.idensic.model.LevelListResponse;
@@ -458,6 +459,8 @@ public class MainFragment extends BaseFragment {
             try {
                 String authorizationToken = strings[0];
                 Response<LevelListResponse> response = apiManager.getLevels(authorizationToken).execute();
+                Response<FlowListResponse> flowListResponseResponse = apiManager.getFlows(authorizationToken).execute();
+                List<FlowItem> flows = flowListResponseResponse.body().getList().getItems();
                 Iterator<LevelItem> iterator = response.body().getList().getItems().iterator();
                 ArrayList<CharSequence> items = new ArrayList<>();
                 while (iterator.hasNext()) {
@@ -465,8 +468,12 @@ public class MainFragment extends BaseFragment {
                     if (item.getId() != null && item.getName() != null) {
                         boolean isAction = false;
                         if (item.getMsdkFlowId() != null) {
-                            FlowItem flow = apiManager.getFlow(authorizationToken, item.getMsdkFlowId()).execute().body();
-                            if (flow != null && flow.getType() == FlowType.Actions) isAction = true;
+                            for (FlowItem flow: flows) {
+                                if (flow != null && flow.getType() == FlowType.Actions) {
+                                    isAction = true;
+                                    break;
+                                }
+                            }
                         }
 
                         Level level = new Level(item.getId(), item.getName(), isAction);
