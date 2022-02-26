@@ -7,9 +7,9 @@ import androidx.annotation.Keep;
 @Keep
 class LoginData {
     @SerializedName("url")
-    private String url;
+    private final String url;
     @SerializedName("t")
-    private String t;
+    private final String t;
 
     public LoginData(String url, String t) {
         this.url = url;

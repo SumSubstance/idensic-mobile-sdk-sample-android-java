@@ -1,13 +1,13 @@
 package com.sumsub.idensic;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import timber.log.Timber;
-
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.security.ProviderInstaller;
+
+import timber.log.Timber;
 
 public class AppActivity extends AppCompatActivity implements ProviderInstaller.ProviderInstallListener {
 
@@ -25,7 +25,7 @@ public class AppActivity extends AppCompatActivity implements ProviderInstaller.
     }
 
     @Override
-    public void onProviderInstallFailed(@NonNull int errorCode, @NonNull Intent recoveryIntent) {
+    public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
         Timber.d("onProviderInstallFailed: errorCode=%s", errorCode);
     }
 }

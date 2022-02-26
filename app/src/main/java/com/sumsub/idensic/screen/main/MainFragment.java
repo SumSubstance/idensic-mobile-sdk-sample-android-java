@@ -9,6 +9,13 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Group;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,7 +42,6 @@ import com.sumsub.sns.core.data.listener.SNSEventHandler;
 import com.sumsub.sns.core.data.listener.SNSIconHandler;
 import com.sumsub.sns.core.data.listener.SNSStateChangedHandler;
 import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
-import com.sumsub.sns.core.data.model.AnswerType;
 import com.sumsub.sns.core.data.model.FlowActionType;
 import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
@@ -52,14 +58,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
-
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.Group;
-import androidx.navigation.fragment.NavHostFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,8 +76,6 @@ public class MainFragment extends BaseFragment {
     private TextInputEditText etActionId;
     private TextInputEditText etAccessTokenAction;
     private TextInputEditText etActionName;
-    private ImageButton ibSelectLevel;
-    private ImageButton ibSelectAction;
     private ApiManager apiManager;
 
     private final TokenExpirationHandler sdkFlowAccessTokeExpirationHandler = () -> {
@@ -160,8 +158,8 @@ public class MainFragment extends BaseFragment {
         etActionName = view.findViewById(R.id.et_action_name);
         MaterialButton btnActionId = view.findViewById(R.id.btn_generate_action_id);
         MaterialButton btnStartAction = view.findViewById(R.id.btn_start_action);
-        ibSelectLevel = view.findViewById(R.id.ib_get_levels);
-        ibSelectAction = view.findViewById(R.id.ib_get_actions);
+        ImageButton ibSelectLevel = view.findViewById(R.id.ib_get_levels);
+        ImageButton ibSelectAction = view.findViewById(R.id.ib_get_actions);
 
         showProgress(false);
         if (prefManager.getUserId() == null) {
@@ -273,12 +271,12 @@ public class MainFragment extends BaseFragment {
             return;
         }
 
-        if (userId == null || userId.isEmpty()) {
+        if (userId.isEmpty()) {
             Toast.makeText(requireContext(), "An user id is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (actionId == null || actionId.isEmpty()) {
+        if (actionId.isEmpty()) {
             Toast.makeText(requireContext(), "An action id is empty", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -446,8 +444,8 @@ public class MainFragment extends BaseFragment {
 
 
     private class LoadLevelsTask extends AsyncTask<String, Void, List<CharSequence>> {
-        private Filter<Level> filter;
-        private LevelSelector selector;
+        private final Filter<Level> filter;
+        private final LevelSelector selector;
 
         LoadLevelsTask(Filter<Level> filter, LevelSelector selector) {
             this.filter = filter;
