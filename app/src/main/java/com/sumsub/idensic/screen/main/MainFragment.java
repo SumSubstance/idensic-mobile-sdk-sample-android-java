@@ -467,7 +467,7 @@ public class MainFragment extends BaseFragment {
                         boolean isAction = false;
                         if (item.getMsdkFlowId() != null) {
                             for (FlowItem flow: flows) {
-                                if (flow != null && flow.getType() == FlowType.Actions) {
+                                if (flow != null && flow.getId().equals(item.getMsdkFlowId()) && flow.getType() == FlowType.Actions) {
                                     isAction = true;
                                     break;
                                 }
