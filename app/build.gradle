@@ -8,8 +8,8 @@ android {
     defaultConfig {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
-        versionCode 11904
-        versionName "1.19.4"
+        versionCode 11905
+        versionName "1.19.5"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
 
-    def sdkVersion = "1.19.4"
+    def sdkVersion = "1.19.5"
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'

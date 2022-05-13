@@ -397,7 +397,7 @@ public class MainFragment extends BaseFragment {
                     .withActionResultHandler(actionResultHandler)
                     .withEventHandler(eventHandler)
                     .withSupportItems(Collections.singletonList(supportItem))
-                    .withConf(new SNSInitConfig("user@email.com", "+11231234567"))
+                    .withConf(new SNSInitConfig("user@email.com", "+11231234567", null))
                     .build();
 
             snsSdk.launch();
