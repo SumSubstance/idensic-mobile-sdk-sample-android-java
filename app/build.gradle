@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 11906
-        versionName "1.19.6"
+        versionCode 11907
+        versionName "1.19.7"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,7 +47,7 @@ repositories {
 
 dependencies {
 
-    def sdkVersion = "1.19.6"
+    def sdkVersion = "1.19.7"
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -57,7 +57,7 @@ dependencies {
     implementation "com.sumsub.sns:idensic-mobile-sdk:$sdkVersion"
     implementation "com.sumsub.sns:idensic-mobile-sdk-prooface:$sdkVersion"
 
-    def nav_version = "2.4.2"
+    def nav_version = "2.5.0"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
