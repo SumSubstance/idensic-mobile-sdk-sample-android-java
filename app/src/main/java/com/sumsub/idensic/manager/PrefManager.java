@@ -67,10 +67,30 @@ public class PrefManager {
         return mPrefs.getString(KEY_ACCESS_TOKEN_ACTION, null);
     }
 
+    public boolean isSandbox() {
+        return mPrefs.getBoolean(KEY_SANDBOX, false);
+    }
+
+    public void setSandbox(boolean value) {
+        mPrefs.edit().putBoolean(KEY_SANDBOX, value).apply();
+    }
+
+    @Nullable
+    public String getClientId() {
+        return mPrefs.getString(KEY_CLIENT_ID, null);
+    }
+
+    public void setClientId(String value) {
+        mPrefs.edit().putString(KEY_CLIENT_ID, value).apply();
+    }
+
     private static final String KEY_URL = "url";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_ACCESS_TOKEN_ACTION = "access_token_action";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_ACTION_ID = "action_id";
+
+    private static final String KEY_SANDBOX = "sandbox";
+    private static final String KEY_CLIENT_ID = "clientid";
 }

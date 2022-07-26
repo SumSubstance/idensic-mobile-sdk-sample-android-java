@@ -19,11 +19,12 @@ public class ApiManager {
 
     private final ApiService service;
 
-    public ApiManager(String apiUrl) {
+    public ApiManager(String apiUrl, ISandboxProvider sandboxProvider, IClientIdProvider clientIdProvider) {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
 
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new DemoHeadersInterceptor(sandboxProvider, clientIdProvider))
                 .addInterceptor(logInterceptor)
                 .build();
 

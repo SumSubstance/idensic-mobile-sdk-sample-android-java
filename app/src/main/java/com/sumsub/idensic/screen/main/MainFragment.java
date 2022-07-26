@@ -23,6 +23,8 @@ import com.sumsub.idensic.App;
 import com.sumsub.idensic.R;
 import com.sumsub.idensic.common.Constants;
 import com.sumsub.idensic.manager.ApiManager;
+import com.sumsub.idensic.manager.IClientIdProvider;
+import com.sumsub.idensic.manager.ISandboxProvider;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
 import com.sumsub.idensic.model.FlowItem;
@@ -141,7 +143,22 @@ public class MainFragment extends BaseFragment {
             return;
         }
 
-        apiManager = new ApiManager(apiUrl);
+        apiManager = new ApiManager(
+                apiUrl,
+                new ISandboxProvider() {
+                    @Override
+                    public Boolean isSandBox() {
+                        return prefManager.isSandbox();
+                    }
+                },
+                new IClientIdProvider() {
+                    @Nullable
+                    @Override
+                    public String getClientID() {
+                        return prefManager.getClientId();
+                    }
+                }
+        );
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         gContent = view.findViewById(R.id.g_content);

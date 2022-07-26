@@ -81,6 +81,8 @@ public class SignInFragment extends BaseFragment {
                         PrefManager prefManager = App.getInstance().getPrefManager();
                         prefManager.setUrl(loginData.getUrl());
                         prefManager.setToken(loginData.getT());
+                        prefManager.setSandbox(loginData.isSandbox());
+                        prefManager.setClientId(loginData.getClientId());
                         NavHostFragment.findNavController(SignInFragment.this).navigate(R.id.action_sign_in_to_main);
                         scanner.close();
                         scanner = null;

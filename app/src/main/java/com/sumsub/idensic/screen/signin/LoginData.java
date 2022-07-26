@@ -11,9 +11,25 @@ class LoginData {
     @SerializedName("t")
     private final String t;
 
-    public LoginData(String url, String t) {
+    @SerializedName("email")
+    private final String email;
+
+    @SerializedName("sandbox")
+    private final boolean legacySandBox;
+
+    @SerializedName("sbx")
+    private final int sbx;
+
+    @SerializedName("c")
+    private final String clientId;
+
+    public LoginData(String url, String t, String email, Boolean legacySandBox, int sbx, String clientId) {
         this.url = url;
         this.t = t;
+        this.email = email;
+        this.legacySandBox = legacySandBox;
+        this.sbx = sbx;
+        this.clientId = clientId;
     }
 
     public String getUrl() {
@@ -22,5 +38,17 @@ class LoginData {
 
     public String getT() {
         return t;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isSandbox() {
+        return sbx == 1 || legacySandBox;
+    }
+
+    public String getClientId() {
+        return clientId;
     }
 }
