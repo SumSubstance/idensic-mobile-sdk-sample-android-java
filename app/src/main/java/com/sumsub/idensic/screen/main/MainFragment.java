@@ -352,9 +352,6 @@ public class MainFragment extends BaseFragment {
                 Timber.d("Some but not all verification steps are passed over");
             } else if (currentState instanceof SNSSDKState.Pending) {
                 Timber.d("Verification is in pending state");
-                if (sdk != null) {
-                    sdk.dismiss();
-                }
             } else if (currentState instanceof SNSSDKState.FinallyRejected) {
                 Timber.d("Applicant has been finally rejected");
             } else if (currentState instanceof SNSSDKState.TemporarilyDeclined) {
