@@ -80,6 +80,8 @@ public class MainFragment extends BaseFragment {
     private TextInputEditText etActionName;
     private ApiManager apiManager;
 
+    private SNSMobileSDK.SDK sdk;
+
     private final TokenExpirationHandler sdkFlowAccessTokeExpirationHandler = () -> {
         PrefManager prefManager = App.getInstance().getPrefManager();
         String token = prefManager.getToken();
@@ -350,6 +352,9 @@ public class MainFragment extends BaseFragment {
                 Timber.d("Some but not all verification steps are passed over");
             } else if (currentState instanceof SNSSDKState.Pending) {
                 Timber.d("Verification is in pending state");
+                if (sdk != null) {
+                    sdk.dismiss();
+                }
             } else if (currentState instanceof SNSSDKState.FinallyRejected) {
                 Timber.d("Applicant has been finally rejected");
             } else if (currentState instanceof SNSSDKState.TemporarilyDeclined) {
@@ -417,6 +422,8 @@ public class MainFragment extends BaseFragment {
                     .withConf(new SNSInitConfig("user@email.com", "+11231234567", null))
                     .build();
 
+
+            sdk = snsSdk;
             snsSdk.launch();
 
         } catch (Exception e) {
