@@ -478,23 +478,12 @@ public class MainFragment extends BaseFragment {
             try {
                 String authorizationToken = strings[0];
                 Response<LevelListResponse> response = apiManager.getLevels(authorizationToken).execute();
-                Response<FlowListResponse> flowListResponseResponse = apiManager.getFlows(authorizationToken).execute();
-                List<FlowItem> flows = flowListResponseResponse.body().getList().getItems();
                 Iterator<LevelItem> iterator = response.body().getList().getItems().iterator();
                 ArrayList<CharSequence> items = new ArrayList<>();
                 while (iterator.hasNext()) {
                     LevelItem item = iterator.next();
                     if (item.getId() != null && item.getName() != null) {
-                        boolean isAction = false;
-                        if (item.getMsdkFlowId() != null) {
-                            for (FlowItem flow: flows) {
-                                if (flow != null && flow.getId().equals(item.getMsdkFlowId()) && flow.getType() == FlowType.Actions) {
-                                    isAction = true;
-                                    break;
-                                }
-                            }
-                        }
-
+                        boolean isAction = FlowType.Actions.getValue().equalsIgnoreCase(item.getType());
                         Level level = new Level(item.getId(), item.getName(), isAction);
                         if (filter.filter(level)) {
                             items.add(item.getName());
