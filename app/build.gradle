@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 12001
-        versionName "1.20.1"
+        versionCode 12002
+        versionName "1.20.2"
         multiDexEnabled true
 
         buildConfigField("String", "DEMO_VERSION", "\"${versionName}\"")
@@ -49,7 +49,7 @@ repositories {
 
 dependencies {
 
-    def sdkVersion = "1.20.1"
+    def sdkVersion = "1.20.2"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -61,7 +61,7 @@ dependencies {
     implementation "com.sumsub.sns:idensic-mobile-sdk-prooface:$sdkVersion"
     implementation "com.sumsub.sns:idensic-mobile-sdk-videoident:$sdkVersion"
 
-    def nav_version = "2.5.2"
+    def nav_version = "2.5.3"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"
