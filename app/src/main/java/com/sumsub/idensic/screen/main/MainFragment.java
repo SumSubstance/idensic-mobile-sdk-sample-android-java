@@ -47,6 +47,7 @@ import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
 import com.sumsub.sns.core.data.model.FlowActionType;
 import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
+import com.sumsub.sns.core.data.model.SNSDocumentDefinition;
 import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.core.data.model.SNSSupportItem;
@@ -394,8 +395,8 @@ public class MainFragment extends BaseFragment {
         };
 
         SNSSupportItem supportItem = new SNSSupportItem(
-                R.string.sns_support_title,
-                R.string.sns_support_subtitle,
+                "Support",
+                "You can contact us in one of the following ways:",
                 SNSSupportItem.Type.Email,
                 "support@company.com",
                 null,
@@ -417,6 +418,9 @@ public class MainFragment extends BaseFragment {
                     .withEventHandler(eventHandler)
                     .withSupportItems(Collections.singletonList(supportItem))
                     .withConf(new SNSInitConfig("user@email.com", "+11231234567", null))
+                    .withPreferredDocumentDefinitions(Map.of(
+                        "IDENTITY", new SNSDocumentDefinition("DRIVERS", "USA")
+                    ))
                     .build();
 
 

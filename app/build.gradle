@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 12003
-        versionName "1.20.3"
+        versionCode 12100
+        versionName "1.21.0"
         multiDexEnabled true
 
         buildConfigField("String", "DEMO_VERSION", "\"${versionName}\"")
@@ -45,17 +45,19 @@ repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
     maven { url "https://maven.sumsub.com/repository/maven-public/" }
+    maven { url "https://maven.sumsub.com/repository/maven-snapshots/" }
 }
 
 dependencies {
 
-    def sdkVersion = "1.20.3"
+    def sdkVersion = "1.21.0"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.mlkit:barcode-scanning:17.0.2'
+    implementation 'com.google.mlkit:barcode-scanning:17.0.3'
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
     implementation "com.sumsub.sns:idensic-mobile-sdk:$sdkVersion"
     implementation "com.sumsub.sns:idensic-mobile-sdk-prooface:$sdkVersion"
@@ -68,6 +70,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }
