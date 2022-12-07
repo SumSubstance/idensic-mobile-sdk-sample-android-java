@@ -27,8 +27,6 @@ import com.sumsub.idensic.manager.IClientIdProvider;
 import com.sumsub.idensic.manager.ISandboxProvider;
 import com.sumsub.idensic.manager.PrefManager;
 import com.sumsub.idensic.model.AccessTokenResponse;
-import com.sumsub.idensic.model.FlowItem;
-import com.sumsub.idensic.model.FlowListResponse;
 import com.sumsub.idensic.model.Level;
 import com.sumsub.idensic.model.LevelItem;
 import com.sumsub.idensic.model.LevelListResponse;
@@ -47,7 +45,6 @@ import com.sumsub.sns.core.data.listener.TokenExpirationHandler;
 import com.sumsub.sns.core.data.model.FlowActionType;
 import com.sumsub.sns.core.data.model.FlowType;
 import com.sumsub.sns.core.data.model.SNSCompletionResult;
-import com.sumsub.sns.core.data.model.SNSDocumentDefinition;
 import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.core.data.model.SNSSupportItem;
@@ -61,7 +58,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -418,9 +414,6 @@ public class MainFragment extends BaseFragment {
                     .withEventHandler(eventHandler)
                     .withSupportItems(Collections.singletonList(supportItem))
                     .withConf(new SNSInitConfig("user@email.com", "+11231234567", null))
-                    .withPreferredDocumentDefinitions(Map.of(
-                        "IDENTITY", new SNSDocumentDefinition("DRIVERS", "USA")
-                    ))
                     .build();
 
 
