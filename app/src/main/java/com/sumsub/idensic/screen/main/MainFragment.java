@@ -392,7 +392,7 @@ public class MainFragment extends BaseFragment {
 
         SNSSupportItem supportItem = new SNSSupportItem(
                 "Support",
-                "You can contact us in one of the following ways:",
+                "You can contact us by email support@company.com",
                 SNSSupportItem.Type.Email,
                 "support@company.com",
                 null,
