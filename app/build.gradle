@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 12200
-        versionName "1.22.0"
+        versionCode 12202
+        versionName "1.22.2"
         multiDexEnabled true
 
         buildConfigField("String", "DEMO_VERSION", "\"${versionName}\"")
@@ -43,7 +43,7 @@ android {
 
 dependencies {
 
-    def sdkVersion = "1.22.0"
+    def sdkVersion = "1.22.2"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -64,6 +64,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
