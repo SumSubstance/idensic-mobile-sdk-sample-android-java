@@ -10,8 +10,8 @@ android {
         applicationId "com.sumsub.idensic.java"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 12202
-        versionName "1.22.2"
+        versionCode 12300
+        versionName "1.23.0"
         multiDexEnabled true
 
         buildConfigField("String", "DEMO_VERSION", "\"${versionName}\"")
@@ -43,7 +43,7 @@ android {
 
 dependencies {
 
-    def sdkVersion = "1.22.2"
+    def sdkVersion = "1.23.0"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
