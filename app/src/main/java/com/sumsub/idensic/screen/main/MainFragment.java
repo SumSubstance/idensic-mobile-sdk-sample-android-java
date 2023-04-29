@@ -1,5 +1,6 @@
 package com.sumsub.idensic.screen.main;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import com.sumsub.sns.core.data.model.SNSCompletionResult;
 import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.core.data.model.SNSSupportItem;
+import com.sumsub.sns.core.widget.autocompletePhone.bottomsheet.SNSPickerDialog;
 import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
@@ -457,11 +459,11 @@ public class MainFragment extends BaseFragment {
     }
 
     private interface LevelSelector {
-        void onLevelSelected(CharSequence flowName);
+        void onLevelSelected(CharSequence levelName);
     }
 
 
-    private class LoadLevelsTask extends AsyncTask<String, Void, List<CharSequence>> {
+    private class LoadLevelsTask extends AsyncTask<String, Void, List<SNSPickerDialog.Item>> {
         private final Filter<Level> filter;
         private final LevelSelector selector;
 
@@ -471,19 +473,19 @@ public class MainFragment extends BaseFragment {
         }
 
         @Override
-        protected List<CharSequence> doInBackground(String... strings) {
+        protected List<SNSPickerDialog.Item> doInBackground(String... strings) {
             try {
                 String authorizationToken = strings[0];
                 Response<LevelListResponse> response = apiManager.getLevels(authorizationToken).execute();
                 Iterator<LevelItem> iterator = response.body().getList().getItems().iterator();
-                ArrayList<CharSequence> items = new ArrayList<>();
+                ArrayList<SNSPickerDialog.Item> items = new ArrayList<>();
                 while (iterator.hasNext()) {
                     LevelItem item = iterator.next();
                     if (item.getId() != null && item.getName() != null) {
                         boolean isAction = FlowType.Actions.getValue().equalsIgnoreCase(item.getType());
                         Level level = new Level(item.getId(), item.getName(), isAction);
                         if (filter.filter(level)) {
-                            items.add(item.getName());
+                            items.add(new SNSPickerDialog.Item(level.getId(), level.getName()));
                         }
                     }
                 }
@@ -501,18 +503,24 @@ public class MainFragment extends BaseFragment {
         }
 
         @Override
-        protected void onPostExecute(List<CharSequence> items) {
+        protected void onPostExecute(List<SNSPickerDialog.Item> items) {
             showProgress(false);
             if (items != null) {
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setItems(items.toArray(new CharSequence[0]), (dialog, which) -> {
-                            dialog.dismiss();
-                            selector.onLevelSelected(items.get(which));
-                        })
-                        .create()
-                        .show();
+                SNSPickerDialog dialog = new SNSPickerDialog();
+                Bundle arguments = new Bundle();
+                arguments.putParcelableArray("extra_items", items.toArray(new SNSPickerDialog.Item[0]));
+                arguments.putInt("extra_item_layout_id", R.layout.sns_picker_list_item);
+                arguments.putBoolean("extra_sort", true);
+                arguments.putBoolean("extra_show_search", true);
+                dialog.setArguments(arguments);
+                dialog.setPickerCallBack(new SNSPickerDialog.PickerCallBack() {
+                    @Override
+                    public void onItemSelected(@NonNull SNSPickerDialog.Item item) {
+                        selector.onLevelSelected(item.getTitle());
+                    }
+                });
+                dialog.show(getParentFragmentManager(), "SNSPickerDialog");
             }
-
         }
 
     }
