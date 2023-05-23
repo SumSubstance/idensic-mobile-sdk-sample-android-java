@@ -62,7 +62,6 @@ public class SignInFragment extends BaseFragment {
     }
 
     private void initCamera() {
-
         cvCamera.setLifecycleOwner(this);
         cvCamera.addFrameProcessor(frame -> processImage(frame.getFormat(), frame.getRotationToView(), frame.getSize().getWidth(), frame.getSize().getHeight(), frame.getData()));
 
@@ -75,7 +74,7 @@ public class SignInFragment extends BaseFragment {
         scanner.process(image).addOnSuccessListener(barcodes -> {
             for (Barcode barcode : barcodes) {
                 try {
-                    String json = new String(Base64.decode(barcode.getRawBytes(), Base64.NO_WRAP));
+                    String json = new String(Base64.decode(barcode.getRawValue(), Base64.NO_WRAP));
                     LoginData loginData = new Gson().fromJson(json, LoginData.class);
                     if (loginData.getUrl() != null && loginData.getT() != null) {
                         PrefManager prefManager = App.getInstance().getPrefManager();
