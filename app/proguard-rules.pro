@@ -20,7 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepattributes *Annotation*
--keep class com.sumsub.idensic.model.FlowListResponse { *; }
--keep class com.sumsub.idensic.model.FlowList { *; }
--keep class com.sumsub.idensic.model.FlowItem { *; }
+-dontwarn com.google.mlkit.vision.**
+-dontwarn org.commonmark.ext.gfm.strikethrough.**
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.javax.**
+-dontwarn org.openjsse.net.**
+-dontwarn com.sumsub.sns.videoident.**
+
+
+# Prevent R8 from leaving Data object members always null
+-keep class com.sumsub.idensic.model.** { *; }

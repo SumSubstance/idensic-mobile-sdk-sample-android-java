@@ -5,6 +5,11 @@ plugins {
 
 android {
     compileSdkVersion 33
+    namespace 'com.sumsub.idensic'
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId "com.sumsub.idensic.java"

@@ -509,7 +509,7 @@ public class MainFragment extends BaseFragment {
                 SNSPickerDialog dialog = new SNSPickerDialog();
                 Bundle arguments = new Bundle();
                 arguments.putParcelableArray("extra_items", items.toArray(new SNSPickerDialog.Item[0]));
-                arguments.putInt("extra_item_layout_id", R.layout.sns_picker_list_item);
+                arguments.putInt("extra_item_layout_id", com.sumsub.sns.R.layout.sns_picker_list_item);
                 arguments.putBoolean("extra_sort", true);
                 arguments.putBoolean("extra_show_search", true);
                 dialog.setArguments(arguments);
