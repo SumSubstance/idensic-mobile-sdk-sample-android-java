@@ -1,5 +1,7 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.appdistribution'
+plugins {
+    id 'com.android.application'
+    id 'com.google.firebase.appdistribution'
+}
 
 android {
     compileSdkVersion 33
