@@ -55,7 +55,7 @@ dependencies {
         because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
     }
 
-    def sdkVersion = "1.30.0"
+    def sdkVersion = "1.31.0"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -69,7 +69,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     implementation "com.sumsub.sns:idensic-mobile-sdk:$sdkVersion"
-    implementation "com.sumsub.sns:idensic-mobile-sdk-prooface:$sdkVersion"
     implementation "com.sumsub.sns:idensic-mobile-sdk-videoident:$sdkVersion"
 
     def nav_version = "2.7.6"
