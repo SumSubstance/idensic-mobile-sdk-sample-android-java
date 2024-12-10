@@ -1,6 +1,5 @@
 package com.sumsub.idensic.screen.main;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.constraintlayout.widget.Group;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.sumsub.idensic.App;
 import com.sumsub.idensic.R;
@@ -35,6 +33,7 @@ import com.sumsub.idensic.screen.base.BaseFragment;
 import com.sumsub.sns.core.SNSActionResult;
 import com.sumsub.sns.core.SNSMobileSDK;
 import com.sumsub.sns.core.SNSModule;
+import com.sumsub.sns.core.SNSProoface;
 import com.sumsub.sns.core.data.listener.SNSActionResultHandler;
 import com.sumsub.sns.core.data.listener.SNSCompleteHandler;
 import com.sumsub.sns.core.data.listener.SNSErrorHandler;
@@ -50,7 +49,6 @@ import com.sumsub.sns.core.data.model.SNSInitConfig;
 import com.sumsub.sns.core.data.model.SNSSDKState;
 import com.sumsub.sns.core.data.model.SNSSupportItem;
 import com.sumsub.sns.core.widget.autocompletePhone.bottomsheet.SNSPickerDialog;
-import com.sumsub.sns.prooface.SNSProoface;
 
 import org.jetbrains.annotations.NotNull;
 
