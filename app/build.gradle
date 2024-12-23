@@ -55,7 +55,7 @@ dependencies {
         because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
     }
 
-    def sdkVersion = "1.34.0"
+    def sdkVersion = "1.34.1"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
